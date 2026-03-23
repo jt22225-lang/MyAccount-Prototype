@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyAccount — Ford Insurance</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #f9fafb;
+    --border: #e8eaed;
+    --border-strong: #d1d5db;
+    --navy: #0f1f3d;
+    --navy-soft: rgba(15,31,61,0.06);
+    --navy-med: rgba(15,31,61,0.12);
+    --red: #c8102e;
+    --red-soft: rgba(200,16,46,0.08);
+    --red-mid: rgba(200,16,46,0.15);
+    --green: #0d7a5f;
+    --green-soft: rgba(13,122,95,0.08);
+    --amber: #b45309;
+    --amber-soft: rgba(180,83,9,0.08);
+    --blue: #1a56db;
+    --blue-soft: rgba(26,86,219,0.08);
+    --text-primary: #0f1f3d;
+    --text-secondary: #4b5675;
+    --text-muted: #9aa0b4;
+    --radius: 14px;
+    --radius-sm: 9px;
+    --shadow: 0 1px 3px rgba(15,31,61,0.08), 0 4px 16px rgba(15,31,61,0.04);
+    --shadow-hover: 0 4px 12px rgba(15,31,61,0.12), 0 8px 32px rgba(15,31,61,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Figtree', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── SHELL ── */
+  .shell {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .sidebar::before {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(200,16,46,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .logo-area {
+    padding: 28px 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2px;
+  }
+
+  .brand-badge {
+    background: var(--red);
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 15px;
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: -0.5px;
+  }
+
+  .brand-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding-left: 46px;
+  }
+
+  nav {
+    flex: 1;
+    padding: 20px 14px;
+    position: relative;
+    z-index: 1;
+    overflow-y: auto;
+  }
+
+  .nav-group-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    padding: 0 10px;
+    margin: 18px 0 6px;
+  }
+
+  .nav-group-label:first-child { margin-top: 4px; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: rgba(255,255,255,0.55);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.15s ease;
+    margin-bottom: 1px;
+    position: relative;
+    user-select: none;
+  }
+
+  .nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.9);
+  }
+
+  .nav-item.active {
+    background: rgba(200,16,46,0.2);
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 18px;
+    background: var(--red);
+    border-radius: 0 3px 3px 0;
+  }
+
+  .nav-icon { width: 17px; height: 17px; flex-shrink: 0; opacity: 0.9; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--red);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    min-width: 20px;
+    text-align: center;
+  }
+
+  .sidebar-footer {
+    padding: 16px 14px 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    z-index: 1;
+  }
+
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .user-chip:hover { background: rgba(255,255,255,0.06); }
+
+  .avatar {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--red), #8b0a1e);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .user-details { flex: 1; overflow: hidden; }
+  .user-name { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-policy-count { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+
+  /* ── MAIN ── */
+  main {
+    padding: 0;
+    overflow-y: auto;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+  }
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .notif-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s;
+  }
+
+  .notif-btn:hover { background: var(--navy-soft); }
+
+  .notif-dot {
+    position: absolute;
+    top: 7px; right: 7px;
+    width: 7px; height: 7px;
+    background: var(--red);
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    font-family: 'Figtree', sans-serif;
+  }
+
+  .btn-primary {
+    background: var(--navy);
+    color: white;
+  }
+  .btn-primary:hover { background: #162d54; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(15,31,61,0.25); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--navy-soft); color: var(--navy); }
+
+  .btn-danger {
+    background: var(--red-soft);
+    color: var(--red);
+    border: 1px solid var(--red-mid);
+  }
+  .btn-danger:hover { background: var(--red-mid); }
+
+  /* ── CONTENT AREA ── */
+  .content {
+    padding: 32px 40px 48px;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeUp 0.25s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── WELCOME BANNER ── */
+  .welcome-banner {
+    background: var(--navy);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-banner::after {
+    content: '';
+    position: absolute;
+    right: -40px; top: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(200,16,46,0.3) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .welcome-text { position: relative; z-index: 1; }
+
+  .welcome-greeting {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.4px;
+    margin-bottom: 4px;
+  }
+
+  .welcome-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 300;
+  }
+
+  .welcome-actions { display: flex; gap: 10px; position: relative; z-index: 1; }
+
+  .btn-light {
+    background: rgba(255,255,255,0.12);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+  }
+  .btn-light:hover { background: rgba(255,255,255,0.2); }
+
+  .btn-red {
+    background: var(--red);
+    color: white;
+  }
+  .btn-red:hover { background: #a80d26; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(200,16,46,0.35); }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .stat-card:hover { box-shadow: var(--shadow-hover); }
+
+  .stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .stat-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+
+  .stat-icon.navy { background: var(--navy-soft); }
+  .stat-icon.green { background: var(--green-soft); }
+  .stat-icon.red { background: var(--red-soft); }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .stat-meta.good { color: var(--green); }
+  .stat-meta.warn { color: var(--amber); }
+
+  /* ── SECTION ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+
+  .link-action {
+    font-size: 13px;
+    color: var(--red);
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    text-decoration: none;
+  }
+  .link-action:hover { opacity: 0.7; }
+
+  /* ── POLICY CARDS ── */
+  .policy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .policy-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .policy-card:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: var(--navy);
+    transform: translateY(-2px);
+  }
+
+  .policy-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .policy-icon {
+    width: 44px; height: 44px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+
+  .policy-icon.car { background: var(--navy-soft); }
+  .policy-icon.home { background: var(--red-soft); }
+  .policy-icon.travel { background: var(--blue-soft); }
+  .policy-icon.van { background: var(--green-soft); }
+
+  .policy-status-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  .policy-status-pill.active {
+    background: var(--green-soft);
+    color: var(--green);
+  }
+
+  .policy-status-pill.renewing {
+    background: var(--amber-soft);
+    color: var(--amber);
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  .active .status-dot { background: var(--green); }
+  .renewing .status-dot { background: var(--amber); }
+
+  .policy-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+    margin-bottom: 3px;
+  }
+
+  .policy-ref {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    font-weight: 400;
+  }
+
+  .policy-details {
+    display: flex;
+    gap: 0;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .policy-detail {
+    flex: 1;
+    padding: 10px 14px;
+    border-right: 1px solid var(--border);
+  }
+
+  .policy-detail:last-child { border-right: none; }
+
+  .detail-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  .detail-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .detail-value.red { color: var(--red); }
+
+  /* ── QUICK ACTIONS ── */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .action-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+  }
+
+  .action-tile:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+    border-color: var(--navy);
+  }
+
+  .action-emoji { font-size: 24px; margin-bottom: 8px; display: block; }
+  .action-label { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .action-sub { font-size: 11px; color: var(--text-muted); }
+
+  /* ── ACTIVITY ── */
+  .activity-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+  .activity-item:hover { background: var(--surface-2); }
+
+  .activity-icon-wrap {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .activity-icon-wrap.navy { background: var(--navy-soft); }
+  .activity-icon-wrap.green { background: var(--green-soft); }
+  .activity-icon-wrap.amber { background: var(--amber-soft); }
+  .activity-icon-wrap.red { background: var(--red-soft); }
+
+  .activity-body { flex: 1; }
+  .activity-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .activity-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+  .activity-right { text-align: right; }
+  .activity-time { font-size: 11px; color: var(--text-muted); margin-bottom: 3px; }
+  .activity-amount { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .activity-amount.debit { color: var(--red); }
+  .activity-amount.credit { color: var(--green); }
+
+  /* ── PAYMENTS SCREEN ── */
+  .payment-hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .payment-balance-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .payment-balance {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+  }
+
+  .payment-balance-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .next-payment-box {
+    text-align: right;
+  }
+
+  .next-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .next-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+
+  .next-amount {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .payments-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    padding: 12px 20px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+  }
+
+  .table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .table-row:last-child { border-bottom: none; }
+  .table-row:hover { background: var(--surface-2); }
+
+  .table-cell { font-size: 14px; color: var(--text-primary); }
+  .table-cell.muted { font-size: 13px; color: var(--text-muted); }
+  .table-cell.amount { font-weight: 600; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .pill.paid { background: var(--green-soft); color: var(--green); }
+  .pill.upcoming { background: var(--amber-soft); color: var(--amber); }
+  .pill.failed { background: var(--red-soft); color: var(--red); }
+
+  /* ── CLAIMS ── */
+  .claim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .claim-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+
+  .claim-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .claim-ref { font-size: 12px; color: var(--text-muted); margin-bottom: 3px; }
+  .claim-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+
+  .claim-progress {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .progress-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 0;
+  }
+
+  .step-dot {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .step-dot.done { background: var(--green); color: white; }
+  .step-dot.current { background: var(--navy); color: white; }
+  .step-dot.pending { background: var(--border); color: var(--text-muted); }
+
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    margin: 0 4px;
+  }
+
+  .step-line.done { background: var(--green); }
+
+  .step-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .step-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    flex: 1;
+    font-weight: 500;
+  }
+
+  .step-label.done { color: var(--green); }
+  .step-label.current { color: var(--navy); font-weight: 600; }
+
+  /* ── ACCOUNT SCREEN ── */
+  .account-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+
+  .account-section-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-2);
+  }
+
+  .account-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .account-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .account-row:last-child { border-bottom: none; }
+
+  .account-row-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+
+  .account-row-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .edit-link {
+    font-size: 12px;
+    color: var(--red);
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+
+  .edit-link:hover { opacity: 0.7; }
+
+  /* ── ALERT BANNER ── */
+  .alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .alert.amber {
+    background: var(--amber-soft);
+    border: 1px solid rgba(180,83,9,0.2);
+    color: var(--amber);
+  }
+
+  .alert.red {
+    background: var(--red-soft);
+    border: 1px solid var(--red-mid);
+    color: var(--red);
+  }
+
+  .alert-icon { font-size: 16px; flex-shrink: 0; }
+  .alert-text { flex: 1; color: var(--text-primary); }
+  .alert-text strong { color: var(--amber); }
+  .alert.red .alert-text strong { color: var(--red); }
+  .alert-action { font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: underline; flex-shrink: 0; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .empty-emoji { font-size: 40px; margin-bottom: 14px; display: block; }
+  .empty-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .empty-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,31,61,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 32px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(15,31,61,0.25);
+    animation: slideUp 0.25s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .modal-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 6px; display: block; }
+
+  .form-input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: 'Figtree', sans-serif;
+    color: var(--text-primary);
+    background: var(--surface);
+    transition: border-color 0.15s;
+    outline: none;
+  }
+
+  .form-input:focus { border-color: var(--navy); }
+
+  .form-select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: 'Figtree', sans-serif;
+    color: var(--text-primary);
+    background: var(--surface);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    justify-content: flex-end;
+  }
+
+  /* ── DOCS ── */
+  .doc-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .doc-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .doc-item:last-child { border-bottom: none; }
+  .doc-item:hover { background: var(--surface-2); }
+
+  .doc-icon {
+    width: 36px; height: 36px;
+    background: var(--red-soft);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .doc-info { flex: 1; }
+  .doc-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .doc-meta { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+  .doc-download {
+    font-size: 12px;
+    color: var(--red);
+    font-weight: 600;
+    padding: 6px 12px;
+    border: 1px solid var(--red-mid);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .doc-download:hover { background: var(--red-soft); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--navy);
+    color: white;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(15,31,61,0.3);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    animation: slideInRight 0.25s ease;
+  }
+
+  .toast.show { display: flex; }
+
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar">
+    <div class="logo-area">
+      <div class="brand-row">
+        <div class="brand-badge">F</div>
+        <div class="brand-name">Ford Insurance</div>
+      </div>
+      <div class="brand-sub">MyAccount</div>
+    </div>
+
+    <nav>
+      <div class="nav-group-label">Overview</div>
+      <div class="nav-item active" onclick="goTo('dashboard', this)">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Dashboard
+      </div>
+
+      <div class="nav-group-label">Insurance</div>
+      <div class="nav-item" onclick="goTo('policies', this)">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+        My Policies
+      </div>
+      <div class="nav-item" onclick="goTo('claims', this)">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Claims
+        <span class="nav-badge">1</span>
+      </div>
+      <div class="nav-item" onclick="goTo('documents', this)">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        Documents
+      </div>
+
+      <div class="nav-group-label">Billing</div>
+      <div class="nav-item" onclick="goTo('payments', this)">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        Payments
+      </div>
+
+      <div class="nav-group-label">Account</div>
+      <div class="nav-item" onclick="goTo('account', this)">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        Personal Details
+      </div>
+      <div class="nav-item" onclick="showToast('Help centre opening…')">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Help & Support
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar">SJ</div>
+        <div class="user-details">
+          <div class="user-name">Sarah Johnson</div>
+          <div class="user-policy-count">2 active policies</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ─── -->
+  <div>
+    <div class="topbar">
+      <div class="page-title" id="pageTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <div class="notif-btn" onclick="showToast('You have 2 new notifications')">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <div class="notif-dot"></div>
+        </div>
+        <button class="btn btn-ghost" onclick="showToast('Signing you out…')">Sign out</button>
+        <button class="btn btn-primary" onclick="openClaimModal()">+ New Claim</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ─── DASHBOARD ─── -->
+      <div class="screen active" id="screen-dashboard">
+
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <div class="welcome-greeting">Good morning, Sarah 👋</div>
+            <div class="welcome-sub">All your policies are active. Next renewal in 47 days.</div>
+          </div>
+          <div class="welcome-actions">
+            <button class="btn btn-light" onclick="goTo('documents', document.querySelector('[onclick*=documents]'))">View Documents</button>
+            <button class="btn btn-red" onclick="openClaimModal()">Make a Claim</button>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-label">Active Policies</div>
+              <div class="stat-icon navy">🛡️</div>
+            </div>
+            <div class="stat-value">2</div>
+            <div class="stat-meta good">✓ All covered</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-label">Next Payment</div>
+              <div class="stat-icon green">💳</div>
+            </div>
+            <div class="stat-value">£68.40</div>
+            <div class="stat-meta warn">⚠ Due 14 Apr 2025</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-label">Open Claims</div>
+              <div class="stat-icon red">📋</div>
+            </div>
+            <div class="stat-value">1</div>
+            <div class="stat-meta">In progress — step 3 of 5</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Your Policies</div>
+          <span class="link-action" onclick="goTo('policies', document.querySelector('[onclick*=policies]'))">View all →</span>
+        </div>
+
+        <div class="policy-grid">
+          <div class="policy-card" onclick="goTo('policies', document.querySelector('[onclick*=policies]'))">
+            <div class="policy-card-top">
+              <div class="policy-icon car">🚗</div>
+              <div class="policy-status-pill active"><div class="status-dot"></div>Active</div>
+            </div>
+            <div class="policy-name">Car Insurance</div>
+            <div class="policy-ref">Policy · FI-2024-CAR-88321</div>
+            <div class="policy-details">
+              <div class="policy-detail">
+                <div class="detail-label">Vehicle</div>
+                <div class="detail-value">Ford Focus</div>
+              </div>
+              <div class="policy-detail">
+                <div class="detail-label">Renews</div>
+                <div class="detail-value red">14 May 2025</div>
+              </div>
+              <div class="policy-detail">
+                <div class="detail-label">Monthly</div>
+                <div class="detail-value">£48.20</div>
+              </div>
+            </div>
+          </div>
+          <div class="policy-card" onclick="goTo('policies', document.querySelector('[onclick*=policies]'))">
+            <div class="policy-card-top">
+              <div class="policy-icon home">🏠</div>
+              <div class="policy-status-pill active"><div class="status-dot"></div>Active</div>
+            </div>
+            <div class="policy-name">Home Insurance</div>
+            <div class="policy-ref">Policy · FI-2024-HOM-44190</div>
+            <div class="policy-details">
+              <div class="policy-detail">
+                <div class="detail-label">Property</div>
+                <div class="detail-value">14 Oak Close</div>
+              </div>
+              <div class="policy-detail">
+                <div class="detail-label">Renews</div>
+                <div class="detail-value">2 Nov 2025</div>
+              </div>
+              <div class="policy-detail">
+                <div class="detail-label">Monthly</div>
+                <div class="detail-value">£20.20</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Recent Activity</div>
+          <span class="link-action" onclick="goTo('payments', document.querySelector('[onclick*=payments]'))">View all →</span>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-item">
+            <div class="activity-icon-wrap green">✅</div>
+            <div class="activity-body">
+              <div class="activity-title">Payment received</div>
+              <div class="activity-sub">Car Insurance — March direct debit</div>
+            </div>
+            <div class="activity-right">
+              <div class="activity-time">2 Mar 2025</div>
+              <div class="activity-amount debit">−£48.20</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon-wrap amber">📋</div>
+            <div class="activity-body">
+              <div class="activity-title">Claim update</div>
+              <div class="activity-sub">CL-2025-0041 — Assessor assigned</div>
+            </div>
+            <div class="activity-right">
+              <div class="activity-time">28 Feb 2025</div>
+              <div class="activity-amount">In review</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon-wrap navy">📄</div>
+            <div class="activity-body">
+              <div class="activity-title">Document available</div>
+              <div class="activity-sub">Home Insurance Certificate 2024/25 ready to download</div>
+            </div>
+            <div class="activity-right">
+              <div class="activity-time">1 Feb 2025</div>
+              <div class="activity-amount">—</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon-wrap green">✅</div>
+            <div class="activity-body">
+              <div class="activity-title">Payment received</div>
+              <div class="activity-sub">Home Insurance — February direct debit</div>
+            </div>
+            <div class="activity-right">
+              <div class="activity-time">2 Feb 2025</div>
+              <div class="activity-amount debit">−£20.20</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header" style="margin-top:28px">
+          <div class="section-title">Quick Actions</div>
+        </div>
+
+        <div class="quick-actions">
+          <div class="action-tile" onclick="openClaimModal()">
+            <span class="action-emoji">🚨</span>
+            <div class="action-label">Make a Claim</div>
+            <div class="action-sub">Start a new claim</div>
+          </div>
+          <div class="action-tile" onclick="goTo('payments', document.querySelector('[onclick*=payments]'))">
+            <span class="action-emoji">💳</span>
+            <div class="action-label">Payments</div>
+            <div class="action-sub">View &amp; manage billing</div>
+          </div>
+          <div class="action-tile" onclick="goTo('documents', document.querySelector('[onclick*=documents]'))">
+            <span class="action-emoji">📄</span>
+            <div class="action-label">Documents</div>
+            <div class="action-sub">Download certificates</div>
+          </div>
+          <div class="action-tile" onclick="goTo('account', document.querySelector('[onclick*=account]'))">
+            <span class="action-emoji">✏️</span>
+            <div class="action-label">Update Details</div>
+            <div class="action-sub">Address, contact info</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ─── POLICIES ─── -->
+      <div class="screen" id="screen-policies">
+        <div class="alert amber">
+          <span class="alert-icon">⚠️</span>
+          <div class="alert-text"><strong>Renewal reminder:</strong> Your Car Insurance renews on 14 May 2025 — 47 days away. Review your options early.</div>
+          <span class="alert-action" onclick="showToast('Opening renewal options…')">Review now</span>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Active Policies</div>
+          <button class="btn btn-primary" onclick="showToast('Opening quote tool…')">+ Add Policy</button>
+        </div>
+
+        <div class="policy-grid">
+          <div class="policy-card">
+            <div class="policy-card-top">
+              <div class="policy-icon car">🚗</div>
+              <div class="policy-status-pill renewing"><div class="status-dot"></div>Renewing soon</div>
+            </div>
+            <div class="policy-name">Car Insurance</div>
+            <div class="policy-ref">FI-2024-CAR-88321 · Comprehensive</div>
+            <div class="policy-details">
+              <div class="policy-detail">
+                <div class="detail-label">Vehicle</div>
+                <div class="detail-value">Ford Focus ST</div>
+              </div>
+              <div class="policy-detail">
+                <div class="detail-label">Reg</div>
+                <div class="detail-value">AB21 XYZ</div>
+              </div>
+              <div class="policy-detail">
+                <div class="detail-label">Renews</div>
+                <div class="detail-value red">14 May 2025</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px">
+              <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="showToast('Loading policy details…')">View details</button>
+              <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="showToast('Opening renewal…')">Renew</button>
+            </div>
+          </div>
+
+          <div class="policy-card">
+            <div class="policy-card-top">
+              <div class="policy-icon home">🏠</div>
+              <div class="policy-status-pill active"><div class="status-dot"></div>Active</div>
+            </div>
+            <div class="policy-name">Home Insurance</div>
+            <div class="policy-ref">FI-2024-HOM-44190 · Buildings &amp; Contents</div>
+            <div class="policy-details">
+              <div class="policy-detail">
+                <div class="detail-label">Property</div>
+                <div class="detail-value">14 Oak Close</div>
+              </div>
+              <div class="policy-detail">
+                <div class="detail-label">Cover</div>
+                <div class="detail-value">£350,000</div>
+              </div>
+              <div class="policy-detail">
+                <div class="detail-label">Renews</div>
+                <div class="detail-value">2 Nov 2025</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px">
+              <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="showToast('Loading policy details…')">View details</button>
+              <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="showToast('Opening change request…')">Make changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── CLAIMS ─── -->
+      <div class="screen" id="screen-claims">
+        <div class="section-header">
+          <div class="section-title">Your Claims</div>
+          <button class="btn btn-primary" onclick="openClaimModal()">+ New Claim</button>
+        </div>
+
+        <div class="claim-card">
+          <div class="claim-top">
+            <div>
+              <div class="claim-ref">CL-2025-0041 · Car Insurance</div>
+              <div class="claim-title">Windscreen damage — parking incident</div>
+            </div>
+            <div class="policy-status-pill renewing"><div class="status-dot"></div>In review</div>
+          </div>
+          <div style="display:flex;gap:24px;font-size:13px;color:var(--text-muted)">
+            <span>📅 Incident: 22 Feb 2025</span>
+            <span>📋 Filed: 24 Feb 2025</span>
+            <span>💰 Estimate: £320</span>
+          </div>
+          <div class="claim-progress">
+            <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">Progress</div>
+            <div class="progress-steps">
+              <div class="step">
+                <div class="step-dot done">✓</div>
+                <div class="step-line done"></div>
+              </div>
+              <div class="step">
+                <div class="step-dot done">✓</div>
+                <div class="step-line done"></div>
+              </div>
+              <div class="step">
+                <div class="step-dot current">3</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step">
+                <div class="step-dot pending">4</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-dot pending">5</div>
+            </div>
+            <div class="step-labels">
+              <div class="step-label done">Filed</div>
+              <div class="step-label done">Reviewed</div>
+              <div class="step-label current">Assessing</div>
+              <div class="step-label">Approved</div>
+              <div class="step-label">Settled</div>
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px">
+            <button class="btn btn-ghost" onclick="showToast('Opening claim details…')">View full details</button>
+            <button class="btn btn-ghost" onclick="showToast('Opening document upload…')">Upload documents</button>
+          </div>
+        </div>
+
+        <div class="section-header" style="margin-top:28px">
+          <div class="section-title">Past Claims</div>
+        </div>
+
+        <div class="activity-card">
+          <div class="activity-item">
+            <div class="activity-icon-wrap green">✅</div>
+            <div class="activity-body">
+              <div class="activity-title">CL-2023-0187 · Home Insurance</div>
+              <div class="activity-sub">Burst pipe — kitchen</div>
+            </div>
+            <div class="activity-right">
+              <div class="activity-time">Oct 2023</div>
+              <div class="activity-amount credit">Settled £1,240</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon-wrap green">✅</div>
+            <div class="activity-body">
+              <div class="activity-title">CL-2022-0554 · Car Insurance</div>
+              <div class="activity-sub">Minor collision — rear bumper</div>
+            </div>
+            <div class="activity-right">
+              <div class="activity-time">Mar 2022</div>
+              <div class="activity-amount credit">Settled £680</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── PAYMENTS ─── -->
+      <div class="screen" id="screen-payments">
+        <div class="payment-hero">
+          <div>
+            <div class="payment-balance-label">Total Monthly Premium</div>
+            <div class="payment-balance">£68.40</div>
+            <div class="payment-balance-sub">Across 2 active policies · Direct debit</div>
+          </div>
+          <div class="next-payment-box">
+            <div class="next-label">Next payment</div>
+            <div class="next-date">14 April 2025</div>
+            <div class="next-amount">£68.40 from account ending 4821</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Payment History</div>
+          <span class="link-action" onclick="showToast('Downloading statement…')">Download statement</span>
+        </div>
+
+        <div class="payments-table">
+          <div class="table-header">
+            <div>Description</div>
+            <div>Date</div>
+            <div>Status</div>
+            <div>Amount</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">Car Insurance — Mar 2025</div>
+            <div class="table-cell muted">2 Mar 2025</div>
+            <div class="table-cell"><span class="pill paid">Paid</span></div>
+            <div class="table-cell amount">£48.20</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">Home Insurance — Mar 2025</div>
+            <div class="table-cell muted">2 Mar 2025</div>
+            <div class="table-cell"><span class="pill paid">Paid</span></div>
+            <div class="table-cell amount">£20.20</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">Car Insurance — Apr 2025</div>
+            <div class="table-cell muted">14 Apr 2025</div>
+            <div class="table-cell"><span class="pill upcoming">Upcoming</span></div>
+            <div class="table-cell amount">£48.20</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">Car Insurance — Feb 2025</div>
+            <div class="table-cell muted">2 Feb 2025</div>
+            <div class="table-cell"><span class="pill paid">Paid</span></div>
+            <div class="table-cell amount">£48.20</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">Home Insurance — Feb 2025</div>
+            <div class="table-cell muted">2 Feb 2025</div>
+            <div class="table-cell"><span class="pill paid">Paid</span></div>
+            <div class="table-cell amount">£20.20</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">Car Insurance — Jan 2025</div>
+            <div class="table-cell muted">2 Jan 2025</div>
+            <div class="table-cell"><span class="pill paid">Paid</span></div>
+            <div class="table-cell amount">£48.20</div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;display:flex;gap:10px">
+          <button class="btn btn-ghost" onclick="showToast('Opening payment method update…')">Update payment method</button>
+          <button class="btn btn-ghost" onclick="showToast('Opening direct debit details…')">View direct debit details</button>
+        </div>
+      </div>
+
+      <!-- ─── DOCUMENTS ─── -->
+      <div class="screen" id="screen-documents">
+        <div class="section-header">
+          <div class="section-title">Your Documents</div>
+        </div>
+
+        <div style="margin-bottom:20px;font-size:13px;color:var(--text-muted)">All your policy documents in one place. Download or save at any time.</div>
+
+        <div class="section-header">
+          <div class="section-title" style="font-size:14px">🚗 Car Insurance</div>
+        </div>
+
+        <div class="doc-list" style="margin-bottom:24px">
+          <div class="doc-item">
+            <div class="doc-icon">📄</div>
+            <div class="doc-info">
+              <div class="doc-name">Certificate of Motor Insurance</div>
+              <div class="doc-meta">FI-2024-CAR-88321 · Issued 14 May 2024 · PDF</div>
+            </div>
+            <div class="doc-download" onclick="showToast('Downloading certificate…')">Download</div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon">📋</div>
+            <div class="doc-info">
+              <div class="doc-name">Policy Schedule</div>
+              <div class="doc-meta">FI-2024-CAR-88321 · Issued 14 May 2024 · PDF</div>
+            </div>
+            <div class="doc-download" onclick="showToast('Downloading policy schedule…')">Download</div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon">📖</div>
+            <div class="doc-info">
+              <div class="doc-name">Policy Wording</div>
+              <div class="doc-meta">FI-2024-CAR-88321 · Version 3.2 · PDF</div>
+            </div>
+            <div class="doc-download" onclick="showToast('Downloading policy wording…')">Download</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title" style="font-size:14px">🏠 Home Insurance</div>
+        </div>
+
+        <div class="doc-list">
+          <div class="doc-item">
+            <div class="doc-icon">📄</div>
+            <div class="doc-info">
+              <div class="doc-name">Home Insurance Certificate 2024/25</div>
+              <div class="doc-meta">FI-2024-HOM-44190 · Issued 2 Nov 2024 · PDF</div>
+            </div>
+            <div class="doc-download" onclick="showToast('Downloading certificate…')">Download</div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon">📋</div>
+            <div class="doc-info">
+              <div class="doc-name">Policy Schedule</div>
+              <div class="doc-meta">FI-2024-HOM-44190 · Issued 2 Nov 2024 · PDF</div>
+            </div>
+            <div class="doc-download" onclick="showToast('Downloading policy schedule…')">Download</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── ACCOUNT ─── -->
+      <div class="screen" id="screen-account">
+        <div class="account-section">
+          <div class="account-section-header">
+            <div class="account-section-title">👤 Personal Information</div>
+            <button class="btn btn-ghost" onclick="showToast('Opening edit mode…')" style="font-size:12px;padding:6px 14px">Edit all</button>
+          </div>
+          <div class="account-row">
+            <div><div class="account-row-label">Full name</div><div class="account-row-value">Sarah Elizabeth Johnson</div></div>
+            <div class="edit-link" onclick="showToast('Opening name edit…')">Change</div>
+          </div>
+          <div class="account-row">
+            <div><div class="account-row-label">Date of birth</div><div class="account-row-value">12 August 1988</div></div>
+            <div class="edit-link" onclick="showToast('Contact us to update DOB')">Change</div>
+          </div>
+          <div class="account-row">
+            <div><div class="account-row-label">Email address</div><div class="account-row-value">sarah.johnson@email.com</div></div>
+            <div class="edit-link" onclick="showToast('Opening email edit…')">Change</div>
+          </div>
+          <div class="account-row">
+            <div><div class="account-row-label">Phone number</div><div class="account-row-value">07700 900 123</div></div>
+            <div class="edit-link" onclick="showToast('Opening phone edit…')">Change</div>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <div class="account-section-header">
+            <div class="account-section-title">🏠 Address</div>
+          </div>
+          <div class="account-row">
+            <div><div class="account-row-label">Home address</div><div class="account-row-value">14 Oak Close, Bristol, BS1 4AB</div></div>
+            <div class="edit-link" onclick="showToast('Opening address edit…')">Change</div>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <div class="account-section-header">
+            <div class="account-section-title">🔒 Security</div>
+          </div>
+          <div class="account-row">
+            <div><div class="account-row-label">Password</div><div class="account-row-value">Last updated 3 months ago</div></div>
+            <div class="edit-link" onclick="showToast('Opening password change…')">Change</div>
+          </div>
+          <div class="account-row">
+            <div><div class="account-row-label">Two-factor authentication</div><div class="account-row-value">Not enabled</div></div>
+            <div class="edit-link" onclick="showToast('Opening 2FA setup…')">Enable</div>
+          </div>
+        </div>
+
+        <div class="account-section">
+          <div class="account-section-header">
+            <div class="account-section-title">📬 Communication Preferences</div>
+          </div>
+          <div class="account-row">
+            <div><div class="account-row-label">Renewal reminders</div><div class="account-row-value">Email &amp; SMS</div></div>
+            <div class="edit-link" onclick="showToast('Opening preferences…')">Edit</div>
+          </div>
+          <div class="account-row">
+            <div><div class="account-row-label">Marketing preferences</div><div class="account-row-value">Email only</div></div>
+            <div class="edit-link" onclick="showToast('Opening preferences…')">Edit</div>
+          </div>
+        </div>
+
+        <div style="margin-top:8px">
+          <button class="btn btn-danger" onclick="showToast('Please call 0800 XXX XXXX to close your account')">Close account</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── CLAIM MODAL ─── -->
+<div class="modal-overlay" id="claimModal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-title">Start a New Claim</div>
+    <div class="modal-sub">Tell us what happened and we'll get your claim underway. Most claims are reviewed within 2 working days.</div>
+
+    <div class="form-group">
+      <label class="form-label">Which policy?</label>
+      <select class="form-select">
+        <option>Car Insurance — FI-2024-CAR-88321</option>
+        <option>Home Insurance — FI-2024-HOM-44190</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Type of claim</label>
+      <select class="form-select">
+        <option>Accident / collision</option>
+        <option>Theft</option>
+        <option>Weather damage</option>
+        <option>Windscreen / glass</option>
+        <option>Fire damage</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Date of incident</label>
+      <input type="date" class="form-input" value="2025-03-15">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Brief description</label>
+      <input type="text" class="form-input" placeholder="e.g. Reversed into a bollard in supermarket car park">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModalDirect()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitClaim()">Submit Claim →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST ─── -->
+<div class="toast" id="toast">
+  <span>✓</span>
+  <span id="toastMsg">Done</span>
+</div>
+
+<script>
+  const titles = {
+    dashboard: 'Dashboard',
+    policies: 'My Policies',
+    claims: 'Claims',
+    payments: 'Payments',
+    documents: 'Documents',
+    account: 'Personal Details'
+  };
+
+  function goTo(id, navEl) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('screen-' + id).classList.add('active');
+    if (navEl) navEl.classList.add('active');
+    document.getElementById('pageTitle').textContent = titles[id] || id;
+    window.scrollTo(0, 0);
+  }
+
+  function openClaimModal() {
+    document.getElementById('claimModal').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('claimModal')) closeModalDirect();
+  }
+
+  function closeModalDirect() {
+    document.getElementById('claimModal').classList.remove('open');
+  }
+
+  function submitClaim() {
+    closeModalDirect();
+    showToast('Claim submitted — ref CL-2025-0042 created');
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
